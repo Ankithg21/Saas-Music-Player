@@ -30,14 +30,19 @@ export async function POST(req: NextRequest){
         });
     }
     try {
-        const data = UpvoteSchema.parse(await req.json());
+        const dataa = UpvoteSchema.parse(await req.json());
         await prisma.upvote.create({
             data:{
                 userId: user.id,
-                stream: data.streamId,
+                streamId: dataa.streamId,
             }
         });
-    } catch (error) {
+        return NextResponse.json({
+            message: "Upvoted"
+        },{
+            status: 200
+        })
+    } catch (error: any) {
         return NextResponse.json({
             message: "Error while upvoting",
         }, {
@@ -47,7 +52,7 @@ export async function POST(req: NextRequest){
 }
 
 export async function GET(req: NextRequest){
-    const creatorId = req.nextUrl.searchParams.get(""); 
+    const creatorId = req.nextUrl.searchParams.get("creatorId"); 
     const stream = await prisma.stream.findMany({
         where:{
             userId: creatorId ?? "",
